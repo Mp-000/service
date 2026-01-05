@@ -1,177 +1,147 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smart Service Enterprise Terpadu</title>
+  <title>Smart Service Enterprise – Full Features</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-size: 14px; }
     .sidebar { min-height: 100vh; }
-    .status-badge { font-size: 11px; }
+    .hidden { display:none; }
   </style>
 </head>
-<body class="bg-light">
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-dark bg-primary">
-  <div class="container-fluid">
-    <span class="navbar-brand fw-bold">Smart Service Enterprise</span>
-    <span class="text-white">Sistem Manajemen Jasa Terpadu</span>
-  </div>
-</nav>
-
-<div class="container-fluid">
-  <div class="row">
-
-    <!-- SIDEBAR -->
-    <div class="col-md-2 bg-white border-end sidebar p-0">
-      <div class="list-group list-group-flush">
-        <a class="list-group-item active" onclick="showPage('dashboard')">📊 Dashboard</a>
-        <a class="list-group-item" onclick="showPage('service')">🧾 Service Order</a>
-        <a class="list-group-item" onclick="showPage('monitor')">📡 Monitoring</a>
-        <a class="list-group-item" onclick="showPage('pelanggan')">👥 Pelanggan</a>
-        <a class="list-group-item" onclick="showPage('teknisi')">🧑‍🔧 Teknisi</a>
-        <a class="list-group-item" onclick="showPage('laporan')">📑 Laporan</a>
-      </div>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="col-md-10 p-4">
-
-      <!-- DASHBOARD -->
-      <div id="dashboard">
-        <h5 class="mb-3">Dashboard Enterprise</h5>
-        <div class="row">
-          <div class="col-md-3"><div class="card"><div class="card-body"><h6>Total Order</h6><h3 id="dTotal">0</h3></div></div></div>
-          <div class="col-md-3"><div class="card"><div class="card-body"><h6>Baru</h6><h3 id="dNew">0</h3></div></div></div>
-          <div class="col-md-3"><div class="card"><div class="card-body"><h6>Proses</h6><h3 id="dProcess">0</h3></div></div></div>
-          <div class="col-md-3"><div class="card"><div class="card-body"><h6>Selesai</h6><h3 id="dDone">0</h3></div></div></div>
+<body class="bg-light"><!-- LOGIN --><div id="loginPage" class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-center">Login Smart Service</h5>
+          <input id="user" class="form-control mb-2" placeholder="Username">
+          <select id="role" class="form-select mb-2">
+            <option value="admin">Admin</option>
+            <option value="teknisi">Teknisi</option>
+            <option value="owner">Owner</option>
+          </select>
+          <button class="btn btn-primary w-100" onclick="login()">Login</button>
         </div>
       </div>
-
-      <!-- SERVICE ORDER -->
-      <div id="service" class="d-none">
-        <h5>Manajemen Service Order</h5>
-        <form id="formService" class="card card-body mb-3">
-          <div class="row">
-            <div class="col-md-3"><input required id="nama" class="form-control" placeholder="Nama Pelanggan"></div>
-            <div class="col-md-3"><input id="hp" class="form-control" placeholder="No HP"></div>
-            <div class="col-md-3"><select id="jenis" class="form-select"><option>Elektronik</option><option>Komputer</option><option>Kendaraan</option></select></div>
-            <div class="col-md-3"><input id="teknisi" class="form-control" placeholder="Teknisi"></div>
-          </div>
-          <textarea id="keluhan" class="form-control mt-2" placeholder="Keluhan"></textarea>
-          <button class="btn btn-primary mt-2">Buat Order</button>
-        </form>
-
-        <table class="table table-bordered table-sm">
-          <thead class="table-primary">
-            <tr><th>No</th><th>Pelanggan</th><th>Teknisi</th><th>Status</th><th>Progress</th><th>Aksi</th></tr>
-          </thead>
-          <tbody id="tblService"></tbody>
-        </table>
-      </div>
-
-      <!-- MONITORING -->
-      <div id="monitor" class="d-none">
-        <h5>Monitoring Operasional</h5>
-        <div id="monitorList"></div>
-      </div>
-
-      <!-- PELANGGAN -->
-      <div id="pelanggan" class="d-none">
-        <h5>Data Pelanggan</h5>
-        <ul id="listPelanggan" class="list-group"></ul>
-      </div>
-
-      <!-- TEKNISI -->
-      <div id="teknisi" class="d-none">
-        <h5>Monitoring Teknisi</h5>
-        <div id="listTeknisi"></div>
-      </div>
-
-      <!-- LAPORAN -->
-      <div id="laporan" class="d-none">
-        <h5>Laporan Manajemen</h5>
-        <p>Laporan performa service berbasis status dan progress.</p>
-      </div>
-
     </div>
+  </div>
+</div><!-- APP --><div id="app" class="hidden">
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container-fluid">
+    <span class="navbar-brand">Smart Service Enterprise</span>
+    <span class="text-white" id="userInfo"></span>
+  </div>
+</nav><div class="container-fluid">
+  <div class="row"><div class="col-md-2 bg-white border-end sidebar p-0">
+  <div class="list-group list-group-flush">
+    <a class="list-group-item" onclick="show('dashboard')">Dashboard</a>
+    <a class="list-group-item" onclick="show('order')">Service Order</a>
+    <a class="list-group-item" onclick="show('monitor')">Monitoring</a>
+    <a class="list-group-item" onclick="show('invoice')">Invoice</a>
+    <a class="list-group-item" onclick="show('tracking')">Tracking Pelanggan</a>
+    <a class="list-group-item" onclick="show('laporan')">Laporan</a>
   </div>
 </div>
 
-<script>
-let orders = JSON.parse(localStorage.getItem('smartService')) || [];
+<div class="col-md-10 p-4">
 
-function showPage(id){
-  ['dashboard','service','monitor','pelanggan','teknisi','laporan'].forEach(p=>document.getElementById(p).classList.add('d-none'));
-  document.getElementById(id).classList.remove('d-none');
-  render();
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <h5>Dashboard</h5>
+    <canvas id="chart"></canvas>
+  </div>
+
+  <!-- ORDER -->
+  <div id="order" class="hidden">
+    <h5>Service Order</h5>
+    <form id="fOrder" class="card card-body mb-3">
+      <div class="row">
+        <div class="col"><input required id="nama" class="form-control" placeholder="Pelanggan"></div>
+        <div class="col"><input id="hp" class="form-control" placeholder="HP"></div>
+        <div class="col"><input id="teknisi" class="form-control" placeholder="Teknisi"></div>
+        <div class="col"><input id="biaya" type="number" class="form-control" placeholder="Biaya"></div>
+      </div>
+      <textarea id="keluhan" class="form-control mt-2" placeholder="Keluhan"></textarea>
+      <button class="btn btn-primary mt-2">Simpan</button>
+    </form>
+    <table class="table table-sm table-bordered"><thead class="table-primary"><tr><th>Nama</th><th>Teknisi</th><th>Status</th><th>%</th><th>Aksi</th></tr></thead><tbody id="tOrder"></tbody></table>
+  </div>
+
+  <!-- MONITOR -->
+  <div id="monitor" class="hidden"><h5>Monitoring</h5><div id="mList"></div></div>
+
+  <!-- INVOICE -->
+  <div id="invoice" class="hidden">
+    <h5>Invoice</h5>
+    <div id="invList"></div>
+  </div>
+
+  <!-- TRACKING -->
+  <div id="tracking" class="hidden">
+    <h5>Tracking Pelanggan</h5>
+    <input id="trackHp" class="form-control mb-2" placeholder="Masukkan No HP">
+    <button class="btn btn-info" onclick="tracking()">Cek Status</button>
+    <div id="trackResult" class="mt-3"></div>
+  </div>
+
+  <!-- LAPORAN -->
+  <div id="laporan" class="hidden">
+    <h5>Laporan</h5>
+    <p>Total pendapatan dan performa teknisi.</p>
+    <div id="lap"></div>
+  </div>
+
+</div>
+
+  </div>
+</div>
+</div><script>
+let orders = JSON.parse(localStorage.getItem('orders')) || [];
+let currentUser=null;
+
+function login(){
+  currentUser={user:user.value,role:role.value};
+  userInfo.innerText=currentUser.user+' ('+currentUser.role+')';
+  loginPage.classList.add('hidden');
+  app.classList.remove('hidden');
+  render(); chart();
 }
+
+function show(id){ ['dashboard','order','monitor','invoice','tracking','laporan'].forEach(p=>document.getElementById(p).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); render(); }
+
+fOrder.onsubmit=e=>{
+  e.preventDefault();
+  orders.push({nama:nama.value,hp:hp.value,teknisi:teknisi.value,biaya:+biaya.value,keluhan:keluhan.value,progress:10,status:'Baru'});
+  e.target.reset(); save(); render(); chart();
+}
+
+function update(i){ orders[i].progress=Math.min(100,orders[i].progress+20); orders[i].status=orders[i].progress==100?'Selesai':'Proses'; save(); render(); chart(); }
 
 function render(){
-  let t=0,n=0,p=0,s=0;
-  let tbl='',mon='',pel={},tek={};
-
+  tOrder.innerHTML=''; mList.innerHTML=''; invList.innerHTML='';
+  let total=0;
   orders.forEach((o,i)=>{
-    t++;
-    if(o.progress<20)n++; else if(o.progress<100)p++; else s++;
-
-    pel[o.nama]=true;
-    tek[o.teknisi]=(tek[o.teknisi]||0)+1;
-
-    tbl+=`<tr>
-      <td>${i+1}</td>
-      <td>${o.nama}</td>
-      <td>${o.teknisi}</td>
-      <td><span class="badge bg-${o.progress==100?'success':o.progress<20?'secondary':'warning'} status-badge">${o.status}</span></td>
-      <td><div class="progress"><div class="progress-bar" style="width:${o.progress}%">${o.progress}%</div></div></td>
-      <td><button class="btn btn-sm btn-success" onclick="update(${i})">+</button></td>
-    </tr>`;
-
-    mon+=`<div class="card mb-2"><div class="card-body">
-      <b>${o.nama}</b> (${o.teknisi})
-      <div class="progress mt-1"><div class="progress-bar bg-info" style="width:${o.progress}%">${o.progress}%</div></div>
-    </div></div>`;
+    total+=o.biaya;
+    tOrder.innerHTML+=`<tr><td>${o.nama}</td><td>${o.teknisi}</td><td>${o.status}</td><td>${o.progress}%</td><td><button class='btn btn-sm btn-success' onclick='update(${i})'>+</button></td></tr>`;
+    mList.innerHTML+=`<div class='card mb-2'><div class='card-body'>${o.nama} - ${o.teknisi}<div class='progress'><div class='progress-bar' style='width:${o.progress}%'>${o.progress}%</div></div></div></div>`;
+    if(o.progress==100) invList.innerHTML+=`<div class='card mb-2'><div class='card-body'>Invoice ${o.nama} - Rp ${o.biaya}</div></div>`;
   });
-
-  document.getElementById('tblService').innerHTML=tbl;
-  document.getElementById('monitorList').innerHTML=mon;
-
-  document.getElementById('dTotal').innerText=t;
-  document.getElementById('dNew').innerText=n;
-  document.getElementById('dProcess').innerText=p;
-  document.getElementById('dDone').innerText=s;
-
-  document.getElementById('listPelanggan').innerHTML=Object.keys(pel).map(p=>`<li class="list-group-item">${p}</li>`).join('');
-  document.getElementById('listTeknisi').innerHTML=Object.keys(tek).map(k=>`<div class="card mb-2"><div class="card-body">${k} - ${tek[k]} Job</div></div>`).join('');
-
-  localStorage.setItem('smartService',JSON.stringify(orders));
+  lap.innerHTML='Total Pendapatan: Rp '+total;
 }
 
-function update(i){
-  orders[i].progress=Math.min(100,orders[i].progress+20);
-  orders[i].status=orders[i].progress==100?'Selesai':'Proses';
-  render();
+function tracking(){
+  let r=orders.filter(o=>o.hp==trackHp.value);
+  trackResult.innerHTML=r.length?r.map(o=>`<div class='card mb-2'><div class='card-body'>${o.nama} - ${o.status} (${o.progress}%)</div></div>`).join(''):'Tidak ditemukan';
 }
 
-formService.onsubmit=e=>{
-  e.preventDefault();
-  orders.push({
-    nama:nama.value,
-    hp:hp.value,
-    jenis:jenis.value,
-    teknisi:teknisi.value,
-    keluhan:keluhan.value,
-    progress:10,
-    status:'Baru'
-  });
-  e.target.reset();
-  render();
+function chart(){
+  let ctx=document.getElementById('chart');
+  new Chart(ctx,{type:'bar',data:{labels:['Baru','Proses','Selesai'],datasets:[{data:[orders.filter(o=>o.progress<20).length,orders.filter(o=>o.progress<100&&o.progress>=20).length,orders.filter(o=>o.progress==100).length]}]}});
 }
 
-render();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+function save(){ localStorage.setItem('orders',JSON.stringify(orders)); }
+</script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script></body>
 </html>
